@@ -88,3 +88,25 @@ tulislihat(X,Y) :- (posisi(helmet1,X,Y); posisi(helmet2,X,Y); posisi(helmet3,X,Y
 tulislihat(X,Y) :- (posisi(ak47Ammo,X,Y); posisi(pistolAmmo,X,Y); posisi(crossbowAmmo,X,Y)), write(' A'),!.
 tulislihat(X,Y) :- posisi(player,X,Y), write(' P'),!.
 tulislihat(_,_) :- write(' _').
+
+initial :- 
+    write('Selamat datang, untuk sekarang catetannya ini dulu'), nl,
+    read(IN),
+    input(IN),
+    loop().
+
+input(start) :-.
+input(help) :-.
+input(save) :-.
+input(load) :-.
+input(take) :-. 
+input(drop) :-.
+input(status) :-.
+input(quit) :-.
+input(look) :- lihat().
+input(map) :- tulisbaris(1).
+input(attack) :-.
+input(n) :-.
+input(w) :-.
+input(s) :-.
+input(e) :-.
