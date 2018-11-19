@@ -1,9 +1,8 @@
+use_module(library(random)).
+
 player(100,0,none,0,9,0).
 
 inventory([],4).
-
-posisi(player,5,5).
-posisi(enemy,3,3).
 
 weapon(ak47, 40).
 weapon(pistol, 25).
@@ -24,18 +23,23 @@ medicine(daun, 15).
 medicine(perban, 30).
 medicine(p3k, 50).
 
-enemy(-1,-1,unassign).
-enemy(-1,-1,unassign).
-enemy(-1,-1,unassign).
-enemy(-1,-1,unassign).
-enemy(-1,-1,unassign).
-enemy(-1,-1,unassign).
-enemy(-1,-1,unassign).
-enemy(-1,-1,unassign).
-enemy(-1,-1,unassign).
-enemy(-1,-1,unassign).
-
 deadzone(1).
+
+:- dynamic posisi/3.
+
+initPl() :- 
+    random(1,11,Xp), random(1,11,Yp), assert(posisi(player,Xy,Yp)).
+
+randomW(1, X) :- X = ak47.
+randomW(2, X) :- X = pistol.
+randomW(3, X) :- X = crossbow.
+
+
+initEn(X) :- 
+    random(1,11,Xe), random(1,11,Ye), random(1,4,We), randomW(We, S), assert(enemy(Xe,Ye,S)),
+    Y is X -1, initEn(Y).
+initEn(1) :- 
+    random(1,11,Xe), random(1,11,Ye), random(1,4,We), randomW(We, S), assert(enemy(Xe,Ye,S)).
 
 lihat :-
     posisi(player,X,Y),
@@ -89,24 +93,33 @@ tulislihat(X,Y) :- (posisi(ak47Ammo,X,Y); posisi(pistolAmmo,X,Y); posisi(crossbo
 tulislihat(X,Y) :- posisi(player,X,Y), write(' P'),!.
 tulislihat(_,_) :- write(' _').
 
-initial :- 
-    write('Selamat datang, untuk sekarang catetannya ini dulu'), nl,
-    read(IN),
-    input(IN),
-    loop().
 
-input(start) :-.
-input(help) :-.
-input(save) :-.
-input(load) :-.
-input(take) :-. 
-input(drop) :-.
-input(status) :-.
-input(quit) :-.
+input(help) :-
+    write('drop     - menjatuhkan item dari inventory'), nl,
+    write('take     - mengambil item dari map'), nl,
+    write('save     - menyimpan status game'), nl,
+    write('load     - melanjutkan status game yang telah disimpan sebelumnya'), nl,
+    write('status   - menampilkan statu permainan'), nl,
+    write('look     - menampilkan wilayah 3x3 disekitar pemain'), nl,
+    write('map      - menampilkan status peta'), nl,
+    write('attack   - menyerang enemy yang berada di kotak yang sama dengan pemain'), nl,
+    write('n        - menggerakkan pemain ke arah Utara (atas)'), nl,
+    write('e        - menggerakkan pemain ke arah Timur (kanan)'), nl,
+    write('s        - menggerakkan pemain ke arah Selatan (bawah)'), nl,
+    write('w        - menggerakkan pemain ke arah Barat (kiri)'), nl,
+    write('quit     - menghentikan permainan (jangan lupa untuk menyimpan permainan)'),nl.
 input(look) :- lihat().
 input(map) :- tulisbaris(1).
-input(attack) :-.
-input(n) :-.
-input(w) :-.
-input(s) :-.
-input(e) :-.
+input()
+
+loop() :- 
+    read(I),
+    input(I),
+    loop().
+
+
+initial :- 
+    write('Selamat datang, untuk sekarang catetannya ini dulu'), nl,
+    read(I),
+    input(I),
+    loop().
