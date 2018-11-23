@@ -48,6 +48,11 @@ randomM(1, X) :- X = daun.
 randomM(2, X) :- X = perban.
 randomM(3, X) :- X = p3k.
 
+randomD(1,X,Y) :- X is 0, Y is 1. /*atas*/
+randomD(2,X,Y) :- X is -1, Y is 0. /*kiri*/
+randomD(3,X,Y) :- X is 0 , Y is -1. /*bawah*/
+randomD(4,X,Y) :- X is 1, Y is 0. /*kanan*/
+
 initEn(1) :- 
     random(1,11,Xe), random(1,11,Ye), random(1,4,We), randomW(We, S), assertz(enemy(1,Xe,Ye,S)),
     assertz(posisi(enemy,Xe,Ye)).
@@ -71,7 +76,7 @@ initAm(X) :-
 initSh(1) :-
     random(1,11,Xe), random(1,11,Ye), random(1,7,Sh), randomS(Sh, S), assertz(posisi(S,Xe,Ye)).
 initSh(X) :-
-    random(1,11,Xe), random(1,11,Ye), random(1,4,Sh), randomS(Sh, S), assertz(posisi(S,Xe,Ye)),
+    random(1,11,Xe), random(1,11,Ye), random(1,7,Sh), randomS(Sh, S), assertz(posisi(S,Xe,Ye)),
     Y is X - 1, initSh(Y).
 
 initMe(1) :-
@@ -150,32 +155,46 @@ input(help) :-
 
 input(look) :- lihat.
 input(map) :- tulisbaris(10).
+
 input(e) :- 
     posisi(player,X,Y),
     retract(posisi(player,X,Y)),
     N is Y + 1,
-    assertz(posisi(player,X,N))
+    assertz(posisi(player,X,N)),
+    player(_,_,_,_,A,K),
+    Nw is A+K,
+    jalanenemy(Nw)
     . 
 input(n) :- 
     posisi(player,X,Y),
     retract(posisi(player,X,Y)),
     E is X + 1,
-    assertz(posisi(player,E,Y))
+    assertz(posisi(player,E,Y)),
+    player(_,_,_,_,A,K),
+    Nw is A+K,
+    jalanenemy(Nw)
     . 
 input(s) :-
     posisi(player,X,Y),
     retract(posisi(player,X,Y)),
     W is X - 1,
-    assertz(posisi(player,W,Y))
+    assertz(posisi(player,W,Y)),
+    player(_,_,_,_,A,K),
+    Nw is A+K,
+    jalanenemy(Nw)
     . 
 input(w) :- 
     posisi(player,X,Y),
     retract(posisi(player,X,Y)),
     S is Y - 1,
-    assertz(posisi(player,X,S))
+    assertz(posisi(player,X,S)),
+    player(_,_,_,_,A,K),
+    Nw is A+K,
+    jalanenemy(Nw)
     . 
 
 input(start) :-
+    randomize,
     initPl,
     random(10, 20, E),
     initEn(E),
@@ -211,6 +230,28 @@ loop(_) :-
 
 initial :- 
     write('Selamat datang, untuk sekarang catetannya ini dulu'), nl,
-    read(I),
-    input(I),
     loop(sembarang).
+
+jalanenemy(1) :-
+    random(1,5,D),
+    randomD(D,Xe,Ye),
+    enemy(1,X,Y,S),
+    retract(enemy(1,X,Y,S)),
+    retract(posisi(enemy,X,Y)),
+    Xb is X + Xe,
+    Yb is Y + Ye,
+    assertz(enemy(1,Xb,Yb,S)),
+    assertz(posisi(enemy,Xb,Yb)).
+    
+jalanenemy(N) :-
+    random(1,5,D),
+    randomD(D,Xe,Ye),
+    enemy(N,X,Y,S),
+    retract(enemy(N,X,Y,S)),
+    retract(posisi(enemy,X,Y)),
+    Xb is X + Xe,
+    Yb is Y + Ye,
+    assertz(enemy(N,Xb,Yb,S)),
+    assertz(posisi(enemy,Xb,Yb)),
+    Nw is N - 1,
+    jalanenemy(Nw).
