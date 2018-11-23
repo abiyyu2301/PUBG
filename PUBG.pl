@@ -49,10 +49,10 @@ randomM(2, X) :- X = perban.
 randomM(3, X) :- X = p3k.
 
 initEn(1) :- 
-    random(1,11,Xe), random(1,11,Ye), random(1,4,We), randomW(We, S), assertz(enemy(Xe,Ye,We,S)),
+    random(1,11,Xe), random(1,11,Ye), random(1,4,We), randomW(We, S), assertz(enemy(1,Xe,Ye,S)),
     assertz(posisi(enemy,Xe,Ye)).
 initEn(X) :- 
-    random(1,11,Xe), random(1,11,Ye), random(1,4,We), randomW(We, S), assertz(enemy(Xe,Ye,We,S)),
+    random(1,11,Xe), random(1,11,Ye), random(1,4,We), randomW(We, S), assertz(enemy(X,Xe,Ye,S)),
     assertz(posisi(enemy,Xe,Ye)),
     Y is X -1, initEn(Y).
 
