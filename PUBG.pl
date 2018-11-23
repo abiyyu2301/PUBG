@@ -227,7 +227,6 @@ loop(_) :-
     input(I),
     loop(I).
 
-
 initial :- 
     write('Selamat datang, untuk sekarang catetannya ini dulu'), nl,
     loop(sembarang).
@@ -255,3 +254,105 @@ jalanenemy(N) :-
     assertz(posisi(enemy,Xb,Yb)),
     Nw is N - 1,
     jalanenemy(Nw).
+
+input(attack):-
+    posisi(player,X,Y),
+    \+posisi(enemy,X,Y),
+    write('Tidak ada enemy di wilayah anda !\n').
+   
+   input(attack) :-
+    player(Hp,Ar,We,Am,En,Ki),
+    We == none,
+    Ar > 0,
+    posisi(player,X,Y),
+    enemy(X,Y,S),
+    weapon(S,D),
+    EnB is En -1,
+    ArB is Ar - D,
+    ArB < 0,
+    HpB is Hp + ArB,
+    ArB is 0,
+    retract(player(Hp,Ar,We,Am,En,Ki)),
+    assertz(player(HpB,ArB,We,Am,EnB,Ki)),
+    write('Anda memukul angin, Enemy dengan gampangnya menghindari pukulan anda\n'),
+    !.
+   
+   input(attack) :-
+    player(Hp,Ar,We,Am,En,Ki),
+    We == none,
+    Ar > 0,
+    posisi(player,X,Y),
+    enemy(X,Y,S),
+    weapon(S,D),
+    ArB is Ar - D,
+    retract(player(Hp,Ar,We,Am,En,Ki)),
+    assertz(player(Hp,ArB,We,Am,En,Ki)),
+    write('Anda memukul angin, Enemy dengan gampangnya menghindari pukulan anda\n'),
+    !.
+   
+   input(attack) :-
+    player(Hp,Ar,We,Am,En,Ki),
+    We == none,
+    Ar =:= 0,
+    posisi(player,X,Y),
+    enemy(X,Y,S),
+    weapon(S,D),
+    HpB is Hp - D,
+    retract(player(Hp,Ar,We,Am,En,Ki)),
+    assertz(player(HpB,Ar,We,Am,En,Ki)),
+    write('tau diri odong, uda bugil masi mau nyerang org goblok.\n'),
+    !.
+   
+   input(attack) :-
+    player(Hp,Ar,We,Am,En,Ki),
+    We \== none,
+    Ar > 0,
+    posisi(player,X,Y),
+    enemy(X,Y,S),
+    weapon(S,D),
+    EnB is En -1,
+    KiB is Ki +1,
+    ArB is Ar - D,
+    ArB < 0,
+    HpB is Hp + ArB,
+    ArB is 0,
+    retract(player(Hp,Ar,We,Am,En,Ki)),
+    retract(enemy(X,Y,S)),
+    retract(posisi(enemy,X,Y)),
+    assertz(player(HpB,ArB,We,Am,EnB,KiB)),
+    assertz(posisi(S,X,Y)),
+    !.
+   
+   input(attack) :-
+    player(Hp,Ar,We,Am,En,Ki),
+    We \== none,
+    Ar > 0,
+    posisi(player,X,Y),
+    enemy(X,Y,S),
+    weapon(S,D),
+    EnB is En -1,
+    KiB is Ki +1,
+    ArB is Ar - D,
+    retract(player(Hp,Ar,We,Am,En,Ki)),
+    retract(enemy(X,Y,S)),
+    retract(posisi(enemy,X,Y)),
+    assertz(player(Hp,ArB,We,Am,EnB,KiB)),
+    assertz(posisi(S,X,Y)),
+    !.
+   
+   input(attack) :-
+    player(Hp,Ar,We,Am,En,Ki),
+    We \== none,
+    Ar =:= 0,
+    posisi(player,X,Y),
+    enemy(X,Y,S),
+    weapon(S,D),
+    EnB is En -1,
+    KiB is Ki +1,
+    HpB is Hp - D,
+    retract(player(Hp,Ar,We,Am,En,Ki)),
+    retract(enemy(X,Y,S)),
+    retract(posisi(enemy,X,Y)),
+    assertz(player(HpB,Ar,We,Am,EnB,KiB)),
+    assertz(posisi(S,X,Y)),
+    !.
